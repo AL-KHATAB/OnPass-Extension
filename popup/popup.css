@@ -1,0 +1,248 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    width: 350px;
+    max-height: 600px;
+    background-color: #F5F7FA;
+    color: #1c1f26;
+    border-radius: 12px;
+    overflow-x: hidden;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #232B38;
+    padding: 12px 16px;
+    border-radius: 0px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header img {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+}
+
+.header-title {
+    font-weight: 600;
+    font-size: 16px;
+    color: #FFFFFF;
+}
+
+.container {
+    padding: 20px 16px;
+}
+
+#accessKeyInput {
+    width: 100%;
+    padding: 12px;
+    margin: 12px 0;
+    background-color: #FFFFFF;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    color: #1c1f26;
+    font-size: 14px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: border-color 0.2s ease;
+}
+
+#accessKeyInput:focus {
+    border-color: #3BA7FF;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59, 167, 255, 0.2);
+}
+
+.btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #232B38;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+    font-size: 14px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn:hover {
+    background-color: #2d8dd8;
+}
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+.search-container {
+    padding: 12px 16px;
+    background-color: #F5F7FA;
+    border-bottom: 1px solid #E0E0E0;
+}
+
+#searchInput {
+    width: 100%;
+    padding: 10px 12px;
+    background-color: #FFFFFF;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    color: #1c1f26;
+    font-size: 14px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+#searchInput:focus {
+    border-color: #3BA7FF;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59, 167, 255, 0.2);
+}
+
+#passwordList {
+    max-height: 450px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 8px 16px;
+}
+
+.password-item {
+    background-color: #FFFFFF;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.password-item:hover {
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+.password-item-details {
+    margin-bottom: 10px;
+}
+
+.password-item h3 {
+    margin-bottom: 4px;
+    color: #3BA7FF;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.password-item p {
+    color: #4C566A;
+    font-size: 12px;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.copy-btn {
+    background-color: #232B38;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    flex: 1;
+    transition: background-color 0.2s ease;
+}
+
+.copy-btn:hover {
+    background-color: #3BA7FF;
+}
+
+.copy-btn:active {
+    transform: translateY(1px);
+}
+
+.error-message {
+    color: #BF616A;
+    text-align: center;
+    padding: 8px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.no-passwords {
+    text-align: center;
+    padding: 20px;
+    color: #7B8395;
+    font-size: 14px;
+}
+
+.scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+    display: none;
+}
+
+.loading {
+    text-align: center;
+    padding: 20px;
+    color: #7B8395;
+}
+
+.spinner {
+    border: 3px solid rgba(59, 167, 255, 0.2);
+    border-radius: 50%;
+    border-top: 3px solid #3BA7FF;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+    margin: 10px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#copiedPopup {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #3BA7FF;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1000;
+}
+
+#copiedPopup.show {
+    opacity: 1;
+}

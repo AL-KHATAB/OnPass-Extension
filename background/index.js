@@ -1,0 +1,10 @@
+importScripts(
+    '../shared/constants.js',
+    '../shared/domain-utils.js',
+    '../shared/api-client.js',
+    'cache.js',
+    'domain-match.js',
+    'token.js',
+    'passwords-api.js',
+    'listeners.js'
+);

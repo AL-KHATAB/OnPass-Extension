@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OnPass</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <img src="../assets/icons/Onpass48.png" alt="OnPass Logo">
+            <div class="header-title">OnPass</div>
+        </div>
+    </div>
+
+    <div class="login-container container">
+        <input type="text" id="accessKeyInput" placeholder="Enter Web Extension Key">
+        <button id="connectBtn" class="btn">Connect to OnPass</button>
+        <div class="error-message" id="loginErrorMessage"></div>
+    </div>
+
+    <div class="passwords-container" style="display: none;">
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search passwords...">
+        </div>
+        <div class="error-message" id="passwordsErrorMessage"></div>
+        <div id="passwordList" class="scrollbar-none"></div>
+    </div>
+    
+    <div id="copiedPopup">Copied to clipboard</div>
+
+    <script src="../shared/constants.js"></script>
+    <script src="../shared/api-client.js"></script>
+    <script src="popup-storage.js"></script>
+    <script src="popup-api.js"></script>
+    <script src="popup-view.js"></script>
+    <script src="popup.js"></script>
+</body>
+</html>

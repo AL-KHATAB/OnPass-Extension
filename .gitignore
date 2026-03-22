@@ -1,0 +1,25 @@
+# OS files
+Thumbs.db
+.DS_Store
+
+# Editor folders
+.vscode/
+.idea/
+
+# Logs and temp files
+*.log
+*.tmp
+*.temp
+
+# Packaged extension archives
+*.zip
+*.crx
+
+# Local environment files
+.env
+.env.*
+
+# Runtime caches
+coverage/
+dist/
+build/

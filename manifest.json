@@ -1,0 +1,43 @@
+{
+    "manifest_version": 3,
+    "name": "OnPass Extension",
+    "version": "1.0",
+    "description": "Secure password access for OnPass",
+    "permissions": [
+        "storage"
+    ],
+    "host_permissions": [
+        "<all_urls>"
+    ],
+    "background": {
+        "service_worker": "background/index.js"
+    },
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": [
+                "content/autofill-core.js",
+                "content/autofill-engine.js",
+                "content/autofill-detection.js",
+                "content/autofill-fill.js",
+                "content/index.js"
+            ],
+            "all_frames": true,
+            "match_about_blank": true,
+            "run_at": "document_idle"
+        }
+    ],
+    "action": {
+        "default_popup": "popup/popup.html",
+        "default_icon": {
+            "16": "assets/icons/OnPass16.png",
+            "48": "assets/icons/Onpass48.png",
+            "128": "assets/icons/Onpass128.png"
+        }
+    },
+    "icons": {
+        "16": "assets/icons/OnPass16.png",
+        "48": "assets/icons/Onpass48.png",
+        "128": "assets/icons/Onpass128.png"
+    }
+}
