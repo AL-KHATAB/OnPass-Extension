@@ -80,10 +80,6 @@ The browser-action popup provides a direct access flow:
 OnPass-Extension/
 |-- manifest.json
 |-- README.md
-|-- docs/
-|   |-- diagrams/
-|   |   `-- system-flow-diagram.mmd
-|   `-- images/
 |-- assets/
 |   `-- icons/
 |-- background/
