@@ -139,6 +139,12 @@ OnPass-Extension/
 4. Select `Connect to OnPass`.
 5. Wait for the popup to validate the key and load saved passwords.
 
+## Popup Screenshot
+
+<p align="center">
+  <img src="assets/screenshots/popup.png" alt="OnPass extension popup" width="420">
+</p>
+
 ## Usage
 
 1. Navigate to a login page.
