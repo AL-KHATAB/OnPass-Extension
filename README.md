@@ -4,7 +4,7 @@
 
 OnPass Extension is a Manifest V3 browser extension that connects the browser to the OnPass desktop application. It allows a user to enter an OnPass Web Extension Key, retrieve credentials from the local desktop service, and autofill login forms on supported websites.
 
-The extension is designed for modern websites that use dynamic rendering patterns such as delayed form mounting, DOM replacement, nested wrappers, Shadow DOM, and iframe-based login pages. To handle those cases, the autofill logic uses field classification, login-context detection, retry scheduling, and framework-compatible value filling.
+The extension is designed for both traditional and modern websites, including those that use dynamic rendering patterns such as delayed form mounting, DOM replacement, nested wrappers, Shadow DOM, and iframe-based login pages. To handle these cases, the autofill logic uses field classification, login-context detection, retry scheduling, and framework-compatible value filling.
 
 ## Features
 
@@ -116,15 +116,45 @@ OnPass-Extension/
 - The content script uses a stateful detection engine rather than a single focus handler, because simple focus-only detection is unreliable on modern sites.
 - Native input setters and synthetic events are used so controlled inputs on React/Vue-style pages accept autofilled values correctly.
 
+## Prerequisites
+
+- The OnPass desktop application must be installed and running
+- The desktop app must expose the local extension API on a supported port
+- You need a valid OnPass Web Extension Key from the desktop application
+- You need a Chromium-based browser that supports Manifest V3 extensions
+
 ## Installation
 
 1. Start the OnPass desktop application.
-2. Make sure the desktop app exposes the local extension API on one of the supported ports.
-3. Open the browser extensions page and enable Developer Mode.
-4. Choose `Load unpacked`.
-5. Select the extension folder that contains `manifest.json`.
-6. Open the extension popup and enter the OnPass Web Extension Key.
-7. Test the extension on a website with a login form.
+2. Open the browser extensions page and enable Developer Mode.
+3. Choose `Load unpacked`.
+4. Select the extension folder that contains `manifest.json`.
+5. Pin the extension to the browser toolbar if desired.
+
+## Setup
+
+1. Open the OnPass desktop application and copy the OnPass Web Extension Key.
+2. Click the extension icon in the browser toolbar.
+3. Paste the key into the popup input field.
+4. Select `Connect to OnPass`.
+5. Wait for the popup to validate the key and load saved passwords.
+
+## Usage
+
+1. Navigate to a login page.
+2. Click into a username, email, or password field.
+3. Wait for the OnPass inline popup to appear.
+4. Select the saved credential you want to use.
+5. Let the extension autofill the detected login fields.
+
+You can also open the browser-action popup at any time to search saved entries and copy usernames or passwords manually.
+
+## Supported Browsers
+
+- Google Chrome
+- Microsoft Edge
+- Brave
+- Other Chromium-based browsers with Manifest V3 support
 
 ## Local API Assumptions
 
