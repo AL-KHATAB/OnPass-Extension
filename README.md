@@ -164,12 +164,22 @@ You can also open the browser-action popup at any time to search saved entries a
 
 ## Local API Assumptions
 
-The extension expects the OnPass desktop application to expose local endpoints such as:
+The extension assumes that the OnPass desktop application exposes a local HTTP API on the same machine, not on a remote server.
 
-- `GET /validate`
-- `GET /passwords`
+Expected behavior:
 
-The shared API client currently tries the configured local ports defined in `shared/constants.js`.
+- The desktop app listens on `http://localhost:9876/`
+- If the primary port is unavailable, it falls back to `http://localhost:9877/`
+- `GET /validate` is available to check whether the supplied extension key is valid
+- `GET /passwords` is available to return password entries for the active desktop session
+- Both endpoints require an `Authorization: Bearer <token>` header
+
+Operational assumptions:
+
+- The desktop app must be running
+- The user must be logged into the desktop app
+- The local API ports must match the values configured in `shared/constants.js`
+- The browser and desktop app must be on the same machine so `localhost` resolves to the local OnPass service
 
 ## Current Limitations
 

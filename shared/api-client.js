@@ -1,7 +1,7 @@
 (function(globalScope) {
     const shared = globalScope.OnPassShared || (globalScope.OnPassShared = {});
     const defaultConstants = {
-        API_PORTS: [8765, 8766],
+        API_PORTS: [9876, 9877],
         VALIDATE_TIMEOUT_MS: 2000,
         PASSWORDS_TIMEOUT_MS: 5000
     };
