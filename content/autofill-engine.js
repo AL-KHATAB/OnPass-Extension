@@ -1,8 +1,11 @@
+// Drives the in-page popup and the event flow that turns focused login fields
+// into credential suggestions resilient to dynamic and SPA-style pages.
 if (typeof OnPassAutofill === 'undefined') {
     throw new Error('OnPassAutofill core must load first (engine).');
 }
 
 Object.assign(OnPassAutofill.prototype, {
+    // Injects the popup and debug panel styles into the current page.
     createStyles() {
         const style = document.createElement('style');
         style.textContent = `
@@ -75,6 +78,7 @@ Object.assign(OnPassAutofill.prototype, {
     },
 
 
+    // Creates the popup containers and protects the focused input while the user selects a credential.
     createPopup() {
         this.popup = document.createElement('div');
         this.popup.id = 'onpass-autofill-popup';
@@ -112,6 +116,7 @@ Object.assign(OnPassAutofill.prototype, {
     },
 
 
+    // Focus and click listeners feed the popup state machine from whichever editable field the user touches.
     attachEventListeners() {
         const focusHandler = (e, source) => {
             if (this.popup && this.popup.contains(e.target)) return;
@@ -148,6 +153,7 @@ Object.assign(OnPassAutofill.prototype, {
     },
 
 
+    // Popup dismissal is throttled so blur and click races do not close it during a credential selection.
     maybeHidePopup(reason) {
         const elapsed = Date.now() - this.popupShownAt;
         if (elapsed < this.popupHideCooldownMs && reason !== 'selection' && reason !== 'autofill-complete') return;
@@ -168,6 +174,7 @@ Object.assign(OnPassAutofill.prototype, {
     },
 
 
+    // Async password results are only applied if the same logical field is still active when they return.
     shouldAcceptPopupResponse(requestId, field) {
         if (requestId !== this.popupRequestSeq) return false;
         if (this.isPopupInteractionLocked()) return false;
@@ -180,6 +187,7 @@ Object.assign(OnPassAutofill.prototype, {
     },
 
 
+    // Resolves the real editable element from composed events, wrappers, and shadow DOM boundaries.
     resolveEventInputTarget(event) {
         if (!event) return null;
         if (this.popup && this.popup.contains(event.target)) return null;
@@ -224,6 +232,7 @@ Object.assign(OnPassAutofill.prototype, {
     },
 
 
+    // Main entry point after focus or click detection: classify the field and decide whether the popup should appear.
     handlePotentialFieldFocus(field, source = 'focusin') {
         const context = this.getLoginContext(field);
         const classification = this.classifyField(field, context, true);
@@ -260,6 +269,7 @@ Object.assign(OnPassAutofill.prototype, {
     },
 
 
+    // Retries popup display because many modern pages replace or animate login fields after the initial focus event.
     schedulePopupShow(field, context, classification, source) {
         const attempts = [{ kind: 'raf' }, { kind: 'timeout', delay: 150 }, { kind: 'timeout', delay: 400 }];
         attempts.forEach((attempt, index) => {
@@ -305,6 +315,7 @@ Object.assign(OnPassAutofill.prototype, {
     },
 
 
+    // Observes DOM churn so SPA updates can refresh field classification and popup targeting.
     observeDynamicDom() {
         if (!document.body) return;
         this.globalObserver = new MutationObserver((mutations) => {
@@ -329,6 +340,7 @@ Object.assign(OnPassAutofill.prototype, {
     },
 
 
+    // Processes DOM changes in batches so large UI updates do not trigger repeated full rescans.
     processMutationBatch(mutations) {
         if (!Array.isArray(mutations) || !mutations.length) return;
         let touchedActiveContext = false;
@@ -377,6 +389,7 @@ Object.assign(OnPassAutofill.prototype, {
     },
 
 
+    // Route-change hooks clear cached form assumptions when single-page applications swap screens without reloading.
     hookRouteChanges() {
         const self = this;
         const wrap = (fnName) => {
