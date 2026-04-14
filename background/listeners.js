@@ -1,5 +1,9 @@
+// Centralizes background event handlers that answer popup and content-script
+// requests and keep cached session data aligned with token lifecycle changes.
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.type === 'GET_SAVED_PASSWORDS') {
+        // Domain filtering happens here so content scripts receive a smaller,
+        // more relevant candidate set before local fallback ranking kicks in.
         fetchPasswords(request.forceRefresh)
             .then(passwords => {
                 const requestUrl = request.url || sender?.url || sender?.tab?.url;
@@ -44,6 +48,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
 
     if (request.type === 'CLEAR_CACHE') {
+        // Popup and settings actions can explicitly invalidate cached passwords after token or vault changes.
         passwordsCache.data = null;
         passwordsCache.timestamp = 0;
         sendResponse({ success: true });
@@ -51,6 +56,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
 
     if (request.type === 'VALIDATE_TOKEN') {
+        // Validation lets the popup confirm the desktop session is still alive without fetching passwords first.
         getAccessToken()
             .then(token => validateToken(token))
             .then(isValid => {
@@ -66,6 +72,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
 });
 
+// Any token change invalidates cached password results immediately so the extension never serves stale data.
 chrome.storage.onChanged.addListener((changes, areaName) => {
     if (areaName === 'local' && changes.onpassAccessToken) {
         // Token changes invalidate any cached password payloads immediately.
@@ -74,6 +81,7 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
     }
 });
 
+// Startup validation clears broken sessions before the user opens the popup on a page.
 chrome.runtime.onStartup.addListener(() => {
     checkTokenValidity();
 });

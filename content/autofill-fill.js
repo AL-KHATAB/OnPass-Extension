@@ -1,8 +1,11 @@
+// Fetches saved credentials, renders the inline popup, and applies selected
+// values back into the most likely username and password fields on the page.
 if (typeof OnPassAutofill === 'undefined') {
     throw new Error('OnPassAutofill core must load first (fill).');
 }
 
 Object.assign(OnPassAutofill.prototype, {
+    // Requests passwords from the background worker and falls back to full-list ranking if domain filtering returns nothing.
     showAutofillOptions(field) {
         if (!field || !this.isEditableField(field) || !this.isUserVisible(field)) {
             this.maybeHidePopup('invalid-field');
@@ -48,6 +51,7 @@ Object.assign(OnPassAutofill.prototype, {
         });
     },
 
+    // Builds the popup list and binds credential selection before focus changes hide the UI.
     renderPopup(passwords, field, requestId = this.popupRequestSeq) {
         if (requestId !== this.popupRequestSeq) return;
         if (this.isPopupInteractionLocked()) return;
@@ -118,6 +122,7 @@ Object.assign(OnPassAutofill.prototype, {
     },
 
 
+    // Keeps the popup within the visible viewport when fields are close to the edge of the page.
     adjustPopupPosition(popup, field) {
         const popupRect = popup.getBoundingClientRect();
         const fieldRect = field.getBoundingClientRect();
@@ -134,6 +139,7 @@ Object.assign(OnPassAutofill.prototype, {
     },
 
 
+    // Fills the best available username/password targets for the active context and falls back gracefully if pairing fails.
     autofill(credentials) {
         const context = this.currentContext || (this.currentField ? this.getLoginContext(this.currentField) : null);
         const targets = this.resolveLatestCredentialTargets(context, this.currentField);
@@ -173,6 +179,7 @@ Object.assign(OnPassAutofill.prototype, {
     },
 
 
+    // Rebuilds the current context graph just before filling so detached or replaced fields do not receive stale values.
     resolveLatestCredentialTargets(context, focusedField) {
         const stabilizedFocus = this.stabilizeElement(focusedField, context) || focusedField;
         const latestContext = (stabilizedFocus && this.getLoginContext(stabilizedFocus)) || context || this.currentContext;
@@ -183,6 +190,7 @@ Object.assign(OnPassAutofill.prototype, {
     },
 
 
+    // Finds the best password field fallback when the preferred pairing logic cannot produce a target.
     resolveLatestPasswordField(context, focusedField) {
         const candidates = [];
         const contextsToTry = [];
@@ -231,6 +239,7 @@ Object.assign(OnPassAutofill.prototype, {
     },
 
 
+    // Retries password filling because some sites mount the password field only after a username step completes.
     fillPasswordWithRetries(password, context, referenceField) {
         if (password == null || password === '') return;
         let filled = false;
@@ -255,6 +264,7 @@ Object.assign(OnPassAutofill.prototype, {
     },
 
 
+    // Uses native setters and input events so controlled React/Vue inputs accept autofilled values.
     setValueAndTriggerEvents(field, value) {
         if (!field || !this.isEditableField(field)) return;
         const nextValue = value == null ? '' : String(value);
@@ -280,6 +290,7 @@ Object.assign(OnPassAutofill.prototype, {
     },
 
 
+    // Scores saved credentials against the current URL so the popup shows the most relevant entries first.
     rankByDomainMatch(passwords, currentUrl) {
         if (!Array.isArray(passwords) || !passwords.length) return [];
         const currentDomain = this.extractDomainFromUrl(currentUrl);
@@ -296,6 +307,7 @@ Object.assign(OnPassAutofill.prototype, {
     },
 
 
+    // Prefers exact domains, then subdomains, then shared registrable domains for broader site families.
     getDomainMatchScore(currentDomain, savedDomain, normalizedCurrentUrl = '', normalizedSavedUrl = '') {
         if (!currentDomain || !savedDomain) return 0;
         if (currentDomain === savedDomain) return 100;
@@ -311,6 +323,7 @@ Object.assign(OnPassAutofill.prototype, {
         return 0;
     },
 
+    // Normalizes domains like co.uk and localhost so related credentials can still be matched predictably.
     getRegistrableDomain(domain) {
         if (!domain) return '';
         const clean = domain.toLowerCase().replace(/\.+$/, '');
@@ -324,6 +337,7 @@ Object.assign(OnPassAutofill.prototype, {
     },
 
 
+    // Extracts a clean hostname even when the saved entry omits the protocol.
     extractDomainFromUrl(url) {
         try {
             if (!url) return '';
@@ -337,6 +351,7 @@ Object.assign(OnPassAutofill.prototype, {
     },
 
 
+    // Normalizes the URL into a comparable domain-plus-path key for secondary match scoring.
     normalizeUrl(url) {
         try {
             if (!url) return '';

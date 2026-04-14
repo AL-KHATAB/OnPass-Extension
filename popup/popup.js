@@ -1,3 +1,5 @@
+// Coordinates popup startup, token validation, password loading, and client-side
+// filtering by composing the popup storage, API, and view helper modules.
 document.addEventListener('DOMContentLoaded', () => {
     const popupShared = window.OnPassPopup || {};
     const storage = popupShared.storage || {};
@@ -9,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     init();
 
+    // Restores the last saved desktop session if the stored token is still valid.
     async function init() {
         try {
             const token = await storage.getAccessToken();
@@ -30,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Fetches the current password snapshot and reuses the same render handlers for copy actions.
     async function loadPasswords(token) {
         view.clearError(elements);
         view.showLoading(elements);
@@ -62,6 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Validates a newly entered extension key before switching the popup into its authenticated state.
     elements.connectBtn.addEventListener('click', async () => {
         const accessToken = elements.accessKeyInput.value.trim();
 
@@ -97,6 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Filters the in-memory password list so search stays responsive without repeated API calls.
     elements.searchInput.addEventListener('input', view.debounce((e) => {
         const searchTerm = e.target.value.toLowerCase();
         const filteredPasswords = allPasswords.filter((password) =>

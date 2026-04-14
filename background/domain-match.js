@@ -1,5 +1,8 @@
+// Provides fallback domain helpers for the background worker when the shared
+// utilities bundle has not yet attached its reusable implementations.
 const ONPASS_BG_DOMAIN = (self.OnPassShared && self.OnPassShared.domain) || {};
 
+// Normalizes stored sites and active-tab URLs to comparable host-like values.
 var normalizeDomainLike = ONPASS_BG_DOMAIN.normalizeDomainLike || function(value) {
     if (!value || typeof value !== 'string') return '';
     const cleaned = value.trim().toLowerCase();
@@ -17,6 +20,7 @@ var normalizeDomainLike = ONPASS_BG_DOMAIN.normalizeDomainLike || function(value
     }
 };
 
+// Rejects values that do not look like real hosts before attempting related-domain checks.
 var isHostLike = ONPASS_BG_DOMAIN.isHostLike || function(value) {
     if (!value) return false;
     if (value === 'localhost') return true;
@@ -25,6 +29,7 @@ var isHostLike = ONPASS_BG_DOMAIN.isHostLike || function(value) {
     return parts.length >= 2;
 };
 
+// Treats exact matches and simple subdomain relationships as related login contexts.
 var domainsRelated = ONPASS_BG_DOMAIN.domainsRelated || function(a, b) {
     if (!a || !b) return false;
     if (!isHostLike(a) || !isHostLike(b)) return false;

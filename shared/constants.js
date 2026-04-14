@@ -1,3 +1,5 @@
+// Exposes shared timeout and port settings to every extension context so
+// popup, content, and background scripts stay aligned.
 (function(globalScope) {
     const shared = globalScope.OnPassShared || (globalScope.OnPassShared = {});
     // Freeze shared settings once so every background/popup module reads the

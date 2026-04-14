@@ -1,8 +1,11 @@
+// Classifies editable fields, builds login context confidence, and keeps track
+// of the best username/password targets as modern pages re-render around them.
 if (typeof OnPassAutofill === 'undefined') {
     throw new Error('OnPassAutofill core must load first (detection).');
 }
 
 Object.assign(OnPassAutofill.prototype, {
+    // Filters down to inputs the engine can meaningfully inspect and autofill.
     isEditableField(element) {
         if (!element || typeof element.tagName !== 'string') return false;
         if (element.disabled || element.readOnly) return false;
@@ -78,6 +81,7 @@ Object.assign(OnPassAutofill.prototype, {
     },
 
 
+    // Combines strong signals, nearby text, and page context to decide what kind of field the user is on.
     classifyField(el, context = null, useCache = true) {
         if (!this.isEditableField(el)) return { kind: 'other', score: 0, signals: [] };
         if (useCache && this.classificationCache.has(el)) return this.classificationCache.get(el);
@@ -183,6 +187,7 @@ Object.assign(OnPassAutofill.prototype, {
     },
 
 
+    // Finds the most likely login container when a site does not use a traditional form element.
     getLoginContext(el) {
         if (!el) return null;
         if (el.form) return el.form;
@@ -230,6 +235,7 @@ Object.assign(OnPassAutofill.prototype, {
     },
 
 
+    // Scores how likely a container is to be a real authentication surface.
     scoreLoginContext(ctx) {
         if (!ctx) return 0;
         const fields = this.collectEditableFields(ctx);
@@ -257,6 +263,7 @@ Object.assign(OnPassAutofill.prototype, {
         if (cls.kind === 'otp') meta.otpCandidates.add(field);
     },
 
+    // Walks the context tree, including shadow roots, to build the candidate field set for pairing logic.
     collectEditableFields(root) {
         const out = [];
         const visit = (node, depth = 0) => {
@@ -275,6 +282,7 @@ Object.assign(OnPassAutofill.prototype, {
     },
 
 
+    // Captures the username, password, and OTP candidates in one structure so later steps can choose the best pair.
     buildFieldGraph(context) {
         const fields = this.collectEditableFields(context);
         const nodes = fields.map((field, index) => ({ field, index, classification: this.classifyField(field, context, true) }));
@@ -288,6 +296,7 @@ Object.assign(OnPassAutofill.prototype, {
     },
 
 
+    // Chooses the most plausible username/password targets for autofill within the active login context.
     selectBestCredentialTargets(context, focusedField) {
         const graph = this.buildFieldGraph(context);
         if (!graph.nodes.length) return null;
@@ -363,6 +372,7 @@ Object.assign(OnPassAutofill.prototype, {
     },
 
 
+    // Recovers a replacement field when frameworks detach and recreate the original DOM node after focus.
     stabilizeElement(el, context) {
         if (!el) return null;
         if (el.isConnected) return el;
@@ -395,7 +405,7 @@ Object.assign(OnPassAutofill.prototype, {
         return best;
     },
 
-
+    // Finds likely submit actions to strengthen login-context scoring on pages without semantic forms.
     findSubmitButtons(ctx) {
         if (!ctx || !ctx.querySelectorAll) return [];
         const nodes = Array.from(ctx.querySelectorAll('button, input[type="submit"], [role="button"]'));

@@ -1,9 +1,12 @@
+// Retrieves passwords from the desktop app through the shared API client and
+// keeps a short-lived cache so frequent popup requests do not flood localhost.
 const ONPASS_BG_API_SHARED = self.OnPassShared || {};
 const ONPASS_BG_API_CONSTANTS = ONPASS_BG_API_SHARED.constants || {
     PASSWORDS_TIMEOUT_MS: 5000
 };
 const ONPASS_BG_API_CLIENT = ONPASS_BG_API_SHARED.api || null;
 
+// Validates the current token before returning cached or freshly loaded passwords to callers.
 async function fetchPasswords(forceRefresh = false) {
     try {
         const now = Date.now();

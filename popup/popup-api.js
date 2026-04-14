@@ -1,3 +1,5 @@
+// Wraps popup-facing API calls so the UI layer can validate tokens and fetch
+// passwords without depending on the shared fallback-fetch implementation directly.
 (function(globalScope) {
     const popupShared = globalScope.OnPassPopup || (globalScope.OnPassPopup = {});
     const shared = globalScope.OnPassShared || {};
@@ -7,6 +9,7 @@
     };
     const apiClient = shared.api || null;
 
+    // Performs a lightweight session check before the popup commits to the authenticated view.
     async function validateToken(token) {
         try {
             if (!apiClient || typeof apiClient.fetchWithFallback !== 'function') return false;
@@ -21,6 +24,7 @@
         }
     }
 
+    // Loads the current vault snapshot for popup rendering once the token is accepted.
     async function fetchPasswords(token) {
         if (!apiClient || typeof apiClient.fetchWithFallback !== 'function') {
             throw new Error('OnPass API client unavailable');

@@ -1,3 +1,5 @@
+// Defines the core autofill state machine that coordinates popup visibility,
+// field classification, and dynamic-DOM handling inside page context.
 class OnPassAutofill {
     constructor() {
         this.debugMode = false;

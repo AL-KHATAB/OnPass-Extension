@@ -1,6 +1,7 @@
 (function(globalScope) {
     const shared = globalScope.OnPassShared || (globalScope.OnPassShared = {});
 
+    // Normalizes saved website values and live URLs into comparable hostnames.
     function normalizeDomainLike(value) {
         if (!value || typeof value !== 'string') return '';
         const cleaned = value.trim().toLowerCase();
@@ -18,6 +19,7 @@
         }
     }
 
+    // Rejects values that cannot sensibly participate in hostname matching.
     function isHostLike(value) {
         if (!value) return false;
         if (value === 'localhost') return true;
@@ -26,6 +28,7 @@
         return parts.length >= 2;
     }
 
+    // Treats exact hosts and parent/subdomain pairs as related for autofill candidate matching.
     function domainsRelated(a, b) {
         if (!a || !b) return false;
         if (!isHostLike(a) || !isHostLike(b)) return false;

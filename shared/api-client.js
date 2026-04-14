@@ -7,6 +7,8 @@
     };
     const constants = shared.constants || defaultConstants;
 
+    // Probes the supported localhost ports in order so the extension can reach
+    // the desktop app even when the primary port is already in use.
     async function fetchWithFallback(pathname, token, timeoutMs) {
         const ports = Array.isArray(constants.API_PORTS) && constants.API_PORTS.length
             ? constants.API_PORTS

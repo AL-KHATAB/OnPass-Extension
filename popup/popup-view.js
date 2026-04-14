@@ -1,6 +1,9 @@
+// Keeps popup DOM lookups and rendering helpers in one place so the main popup
+// controller can focus on state transitions and API flow.
 (function(globalScope) {
     const popupShared = globalScope.OnPassPopup || (globalScope.OnPassPopup = {});
 
+    // Resolves the small set of popup elements shared across login, search, and copy flows.
     function getElements() {
         return {
             loginContainer: document.querySelector('.login-container'),
@@ -14,16 +17,19 @@
         };
     }
 
+    // Shows the access-key form when there is no trusted desktop session yet.
     function showLoginContainer(elements) {
         elements.loginContainer.style.display = 'block';
         elements.passwordsContainer.style.display = 'none';
     }
 
+    // Swaps the popup into the authenticated password list view.
     function showPasswordsContainer(elements) {
         elements.loginContainer.style.display = 'none';
         elements.passwordsContainer.style.display = 'block';
     }
 
+    // Displays a short-lived confirmation when credentials are copied from the popup.
     function showCopiedPopup(elements) {
         elements.copiedPopup.classList.add('show');
         setTimeout(() => {
@@ -56,6 +62,7 @@
         elements.passwordList.innerHTML = '';
     }
 
+    // Renders the current password list and wires each row to the copy handlers supplied by the controller.
     function renderPasswords(elements, passwords, handlers) {
         clearPasswordList(elements);
 
@@ -116,6 +123,7 @@
         });
     }
 
+    // Prevents a re-render on every keystroke while the user is filtering the password list.
     function debounce(func, wait) {
         let timeout;
         return function(...args) {
